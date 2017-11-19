@@ -1,3 +1,4 @@
+"use strict"; //this line was added since the server stoped running
 //Express
 var express = require('express');
 var app = express();
@@ -17,9 +18,15 @@ app.use(express.json());       // to support JSON-encoded bodies
 var pcap = require('pcap'),
     tcp_tracker = new pcap.TCPTracker(),
     pcap_session = pcap.createSession('en0', "ip proto \\tcp");
+    //pcap_session = pcap.createSession('wlan0', "ip proto \\tcp");//for raspberry pi
 
 var host =require('host');
 var dns  = require('dns');
+//if rpi:
+var gpio = require('rpi-gpio');
+var gpioPin=7;
+gpio.setup(gpioPin, gpio.DIR_OUT);
+
 //SerialPort in case you were connected to an arduino or a serial device
 // var SerialPort = require('serialport');
 // var serialPort = new SerialPort("/dev/cu.usbmodem1411", {
@@ -80,7 +87,7 @@ app.get("/unplug/willdie", function(req, res){
 //In case the user sends a post request, here you can schedule the unplug
 //curl -X POST -d 'time=5000' 'http://localhost:3000/unplug'
 //curl -X POST -d 'newBannedURL=facebook.com' 'http://localhost:3000/unplug'
-
+//curl -X POST -d 'newBannedURL=facebook.com' 'http://192.168.1.98:3000/unplug'
 app.post("/unplug",function(req,res){
     var waitfor=Number(req.body.time);
     var tempURL=(req.body.newBannedURL);
@@ -103,10 +110,31 @@ app.post("/unplug",function(req,res){
     }
 });
 
+var delay = 2000;
+var cycleTimes=3;
+var currentCycle=0;
 
 function unplug(){
   //send command to motors to unplug
   console.log("unplugging");
+  //if rpi
+  gpioOn();
+}
+function gpioOn(){
+  if(currentCycle>= cycleTimes){
+    gpio.destroy(function() {
+      console.log('Closed pins, now exit');
+    }
+  }
+  setTimeout(function() {
+        gpio.write(gpioPin, 1, gpioOff);
+        currentCycle += 1;
+    }, delay);
+}
+function gpioOff(){
+  setTimeout(function() {
+      gpio.write(gpioPin, 0, gpioOn);
+  }, delay);
 }
 
 
