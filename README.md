@@ -1,5 +1,5 @@
 # Router unplug
-
+##### *Note: remember to run with sudo*
 ## Get Requests
 #### /unplug/banned
 Will return the list of banned websites with their respective list of IPs.

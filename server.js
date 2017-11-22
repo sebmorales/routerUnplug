@@ -18,14 +18,15 @@ app.use(express.json());       // to support JSON-encoded bodies
 var pcap = require('pcap'),
     tcp_tracker = new pcap.TCPTracker(),
     pcap_session = pcap.createSession('en0', "ip proto \\tcp");
-    //pcap_session = pcap.createSession('wlan0', "ip proto \\tcp");//for raspberry pi
+    // pcap_session = pcap.createSession('wlan0', "ip proto \\tcp");//for raspberry pi
 
 var host =require('host');
 var dns  = require('dns');
+
 //if rpi:
-var gpio = require('rpi-gpio');
-var gpioPin=7;
-gpio.setup(gpioPin, gpio.DIR_OUT);
+// var gpio = require('rpi-gpio');
+// var gpioPin=11;//same as GPIO 17
+// gpio.setup(gpioPin, gpio.DIR_OUT);
 
 //SerialPort in case you were connected to an arduino or a serial device
 // var SerialPort = require('serialport');
@@ -33,6 +34,7 @@ gpio.setup(gpioPin, gpio.DIR_OUT);
 //   baudrate: 9600,
 // 	parser: SerialPort.parsers.readline('\n')
 // });
+
 var bannedURLS=[];
 var willdie=-1;
 var d = new Date();
@@ -118,18 +120,19 @@ function unplug(){
   //send command to motors to unplug
   console.log("unplugging");
   //if rpi
-  gpioOn();
+  // gp ioOn();
 }
 function gpioOn(){
   if(currentCycle>= cycleTimes){
     gpio.destroy(function() {
       console.log('Closed pins, now exit');
-    }
+    });
+    return;
   }
   setTimeout(function() {
-        gpio.write(gpioPin, 1, gpioOff);
-        currentCycle += 1;
-    }, delay);
+    gpio.write(gpioPin, 1, gpioOff);
+    currentCycle += 1;
+  }, delay);
 }
 function gpioOff(){
   setTimeout(function() {
