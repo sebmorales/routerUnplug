@@ -1,5 +1,9 @@
 # Router unplug
-##### *Note: remember to run with sudo*
+##### *Notes:
+##### -/noAuth contains the Unplug server without a login page.
+##### -/UnRouter contains Unplug server with login page and page assets. 
+##### -Remember to run Unplug requests with sudo*
+
 ## Get Requests
 #### /unplug/banned
 Will return the list of banned websites with their respective list of IPs.
