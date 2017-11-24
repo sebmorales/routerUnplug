@@ -1,0 +1,6 @@
+-Use of a machine learning system is called "inference"
+
+-Don't want to learn too much from any one example
+  -examples are one data point
+
+-
